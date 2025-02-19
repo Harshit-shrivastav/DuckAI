@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from duckassist import DuckDuckAssist
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from fastapi import Request
 
 load_dotenv()
 
@@ -22,7 +23,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+@app.middleware("http")
+async def ip_whitelist_middleware(request: Request, call_next):
+    forwarded_for = request.headers.get("X-Forwarded-For")
+    client_ip = forwarded_for.split(",")[0].strip() if forwarded_for else request.client.host
+    client_ip = request.headers.get("CF-Connecting-IP", client_ip)
+    if client_ip not in ALLOWED_IPS:
+        return HTTPException(status_code=403, detail="Access forbidden")
+    return await call_next(request)
+    
 @app.get("/v1/get-token")
 async def getToken():
     try:
@@ -30,7 +39,6 @@ async def getToken():
         return {"message": "Success creating a token", "token": token}
     except:
         return HTTPException(500, "Error creating a token")
-
 
 class ConversationBody(BaseModel):
     token: str = "use /v1/get-token to get token"
