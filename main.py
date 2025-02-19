@@ -35,8 +35,6 @@ class IPWhitelistMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
 app.add_middleware(IPWhitelistMiddleware)
-"""
-"""
 @app.middleware("http")
 async def ip_whitelist_middleware(request: Request, call_next):
     forwarded_for = request.headers.get("X-Forwarded-For")
@@ -45,7 +43,7 @@ async def ip_whitelist_middleware(request: Request, call_next):
     if client_ip not in ALLOWED_IPS:
         raise HTTPException(status_code=403, detail="Access forbidden")
     return await call_next(request)
-"""
+
 class IPWhitelistMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         client_ip = request.headers.get("X-Forwarded-For", request.client.host)
@@ -57,7 +55,7 @@ class IPWhitelistMiddleware(BaseHTTPMiddleware):
                 status_code=403
             )
         return await call_next(request)
-
+"""
 @app.get("/v1/get-token")
 async def getToken():
     try:
