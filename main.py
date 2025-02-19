@@ -14,6 +14,7 @@ app = FastAPI()
 assist = DuckDuckAssist()
 
 origins = [os.getenv("BASE_API_ORIGINS")]
+ALLOWED_IPS = os.getenv("ALLOWED_IPS", "").split(",")
 
 app.add_middleware(
     CORSMiddleware,
