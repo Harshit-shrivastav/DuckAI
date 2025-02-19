@@ -35,7 +35,7 @@ async def getToken():
 class ConversationBody(BaseModel):
     token: str = "use /v1/get-token to get token"
     model: str = "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
-    message: list = [{"role": "user", "content": "what is 2+2?"}]
+    message: list = [{"role": "user", "content": "Hey!"}]
     stream: bool = True
 
 
