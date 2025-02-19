@@ -3,11 +3,9 @@ import asyncio
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from duckassist import DuckDuckAssist
+from duckgpt.duckassist import DuckDuckAssist
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from fastapi import Request
-from starlette.middleware.base import BaseHTTPMiddleware
 
 load_dotenv()
 
@@ -24,6 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/v1/get-token")
 async def getToken():
     try:
@@ -32,10 +31,11 @@ async def getToken():
     except:
         return HTTPException(500, "Error creating a token")
 
+
 class ConversationBody(BaseModel):
     token: str = "use /v1/get-token to get token"
-    model: str = "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo" #gpt-4o-mini, claude-3-haiku, llama, mixtral, o3-mini
-    message: list = [{"role": "user", "content": ""}]
+    model: str = "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
+    message: list = [{"role": "user", "content": "what is 2+2?"}]
     stream: bool = True
 
 
@@ -60,4 +60,4 @@ if __name__ == "__main__":
     HOST = os.getenv("BASE_API_HOST")
     PORT = os.getenv("BASE_API_PORT")
 
-    uvicorn.run("main:app", host=HOST, port=int(PORT), reload=True)
+    uvicorn.run("duckgpt.main:app", host=HOST, port=int(PORT), reload=True)
