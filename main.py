@@ -60,4 +60,4 @@ if __name__ == "__main__":
     HOST = os.getenv("BASE_API_HOST")
     PORT = os.getenv("BASE_API_PORT")
 
-    uvicorn.run("duckgpt.main:app", host=HOST, port=int(PORT), reload=True)
+    uvicorn.run("main:app", host=HOST, port=int(PORT), reload=True)
