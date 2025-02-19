@@ -1,9 +1,8 @@
 import os
 import asyncio
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import StreamingResponse, PlainTextResponse
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
 from duckassist import DuckDuckAssist
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -13,17 +12,6 @@ load_dotenv()
 app = FastAPI()
 assist = DuckDuckAssist()
 
-# Load authorized IPs from environment variable
-allowed_ips = [ip.strip() for ip in os.getenv("AUTHORIZED_IPS", "").split(",") if ip.strip()]
-
-class IPWhitelistMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        client_ip = request.client.host
-        if client_ip not in allowed_ips:
-            return PlainTextResponse("request rejected", status_code=403)
-        return await call_next(request)
-
-# Add CORS middleware first
 origins = [os.getenv("BASE_API_ORIGINS")]
 
 app.add_middleware(
@@ -34,8 +22,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Add IP whitelist middleware after CORS
-app.add_middleware(IPWhitelistMiddleware)
 
 @app.get("/v1/get-token")
 async def getToken():
@@ -45,11 +31,13 @@ async def getToken():
     except:
         return HTTPException(500, "Error creating a token")
 
+
 class ConversationBody(BaseModel):
     token: str = "use /v1/get-token to get token"
     model: str = "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
-    message: list = [{"role": "user", "content": "Hey! Are you Alive?"}]
+    message: list = [{"role": "user", "content": "Hey! Are you alive?"}]
     stream: bool = True
+
 
 @app.post("/v1/chat/completions")
 async def completions(body: ConversationBody):
@@ -64,6 +52,7 @@ async def completions(body: ConversationBody):
             media_type="text/plain",
         )
     return resp
+
 
 if __name__ == "__main__":
     import uvicorn
