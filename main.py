@@ -30,7 +30,7 @@ async def ip_whitelist_middleware(request: Request, call_next):
     client_ip = forwarded_for.split(",")[0].strip() if forwarded_for else request.client.host
     client_ip = request.headers.get("CF-Connecting-IP", client_ip)
     if client_ip not in ALLOWED_IPS:
-        return HTTPException(status_code=403, detail="Access forbidden")
+        raise HTTPException(status_code=403, detail="Access forbidden")
     return await call_next(request)
     
 @app.get("/v1/get-token")
