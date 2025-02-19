@@ -15,7 +15,6 @@ app = FastAPI()
 assist = DuckDuckAssist()
 
 origins = [os.getenv("BASE_API_ORIGINS")]
-ALLOWED_IPS = os.getenv("ALLOWED_IPS", "").split(",")
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,17 +23,6 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
-
-class IPWhitelistMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        client_ip = request.headers.get("X-Forwarded-For", request.client.host)
-        client_ip = request.headers.get("CF-Connecting-IP", client_ip) 
-        if client_ip not in ALLOWED_IPS:
-            print("Blocked ip request: ",client_ip)
-            raise HTTPException(status_code=403, detail="Access forbidden")
-        return await call_next(request)
-
-app.add_middleware(IPWhitelistMiddleware)
 
 @app.get("/v1/get-token")
 async def getToken():
