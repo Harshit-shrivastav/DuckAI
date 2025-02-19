@@ -125,7 +125,7 @@ class DuckDuckAssist:
                     "choice": [
                         {
                             "message": {
-                                "role": "user",
+                                "role": "assistant",
                                 "content": fullMessage,
                             },
                             "logprobs": None,
