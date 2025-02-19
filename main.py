@@ -3,7 +3,7 @@ import asyncio
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from duckgpt.duckassist import DuckDuckAssist
+from duckassist import DuckDuckAssist
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
