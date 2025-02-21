@@ -60,4 +60,4 @@ if __name__ == "__main__":
     HOST = os.getenv("BASE_API_HOST")
     PORT = os.getenv("BASE_API_PORT")
 
-    uvicorn.run("main:app", host=HOST, port=int(PORT), reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=int(PORT), reload=True)
