@@ -22,6 +22,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def read_root():
+    return {"message": "API is Alive!"}
+
 
 @app.get("/v1/get-token")
 async def getToken():
@@ -35,7 +39,7 @@ async def getToken():
 class ConversationBody(BaseModel):
     token: str = "use /v1/get-token to get token"
     model: str = "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
-    message: list = [{"role": "user", "content": "Hey! Are you alive?"}]
+    message: list = [{"role": "user", "content": "Hey! Are you there ?"}]
     stream: bool = True
 
 
